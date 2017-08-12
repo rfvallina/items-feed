@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var source;
+		var url = 'http://localhost:8080/feed';
+
+		if (!!window.EventSource) {
+			source = new EventSource(url);
+			source.addEventListener('message', function(e) {
+				var data = JSON.parse(e.data);
+				if (data && data.length > 0) {
+					$("#data tbody").append("<tr><td>" + data[0].itemId + "</td><td>" + data[0].title + "</td><td>" + data[0].currentPrice + "</td></tr>");
+				} else
+					console.log("No items found");
+			}, true);
+
+			source.addEventListener('open', function(e) {
+				console.log("Connection opened");
+			}, true);
+
+			source.addEventListener('error', function(e) {
+				console.log("Connection error");
+			}, true);
+
+			source.addEventListener('close', function(e) {
+				console.log("Connection closed");
+			}, true);
+
+			
+		}
+		
+	});
+</script>
+<body>
+	<h3>Items Feed</h3>
+	
+	<div id="data">
+		<table border="1">
+			<thead>
+				<tr>
+					<td>Id</td>
+					<td>Title</td>
+					<td>Price</td>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</body>
+</html>
